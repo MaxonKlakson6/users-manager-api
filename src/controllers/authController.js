@@ -77,7 +77,7 @@ class AuthController {
 
   async quit(req, res) {
     try {
-      const email = checkJwt();
+      const email = checkJwt(req);
 
       AuthRepository.quit(email);
 
