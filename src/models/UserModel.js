@@ -25,6 +25,14 @@ const User = sequelize.define("User", {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
+  lastLogin: {
+    type: DataTypes.STRING,
+    defaultValue: "",
+  },
+  onlineStatus: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
 });
 
 module.exports = User;

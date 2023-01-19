@@ -5,6 +5,8 @@ const { AuthRepository } = require("../repositories/index");
 
 const { signUpSchema, signInSchema } = require("../validation/index");
 const ApiError = require("../errors/ApiError");
+const checkBLock = require("../helpers/checkBlock");
+
 class AuthController {
   async signIn(req, res) {
     try {
@@ -12,6 +14,7 @@ class AuthController {
       const validatedCredentials = signInSchema.validateSync(userData, {
         abortEarly: false,
       });
+
       const user = await UserModel.findOne({
         where: { email: userData.email },
       });
@@ -29,7 +32,9 @@ class AuthController {
         ApiError.badRequest("Wrong password");
       }
 
-      const jwtToken = await AuthRepository.createJwt({
+      checkBLock(user);
+
+      const jwtToken = await AuthRepository.login({
         id: user.id,
         email: user.email,
       });
@@ -47,6 +52,7 @@ class AuthController {
       const candidate = await UserModel.findOne({
         where: { email: body.email },
       });
+
       if (candidate) {
         ApiError.badRequest("User already has been created");
       }

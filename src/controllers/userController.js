@@ -1,9 +1,17 @@
-const { UserRepository } = require("../repositories/index");
+const { UserRepository, AuthRepository } = require("../repositories/index");
 const checkJwt = require("../helpers/checkJwt");
+const { UserModel } = require("../models/index");
+const ApiError = require("../errors/ApiError");
+const checkBlock = require("../helpers/checkBlock");
+
 class UserController {
   async getUsers(req, res) {
     try {
-      checkJwt(req);
+      const email = checkJwt(req);
+
+      const user = await UserModel.findOne({ where: { email } });
+
+      checkBlock(user);
 
       const usersList = await UserRepository.getAllUsers();
 
@@ -15,12 +23,22 @@ class UserController {
 
   async toggleUsersIsBlocked(req, res) {
     try {
-      checkJwt(req);
       const { idList, isBlocked } = req.body;
+      const email = checkJwt(req);
+
+      const user = await UserModel.findOne({ where: { email } });
+
+      checkBlock(user);
+
       const updatedUserList = await UserRepository.changeIsBlocked(
         idList,
         isBlocked
       );
+
+      if (idList.includes(user.id)) {
+        AuthRepository.quit(email);
+        ApiError.unauthorized("Your account is blocked");
+      }
 
       res.json({ updatedUserList });
     } catch (error) {
@@ -30,7 +48,12 @@ class UserController {
 
   async deleteUsers(req, res) {
     try {
-      checkJwt(req);
+      const email = checkJwt(req);
+
+      const user = await UserModel.findOne({ where: { email } });
+
+      checkBlock(user);
+
       const { idList } = req.body;
       const updatedUserList = await UserRepository.deleteUsers(idList);
 

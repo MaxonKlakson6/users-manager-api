@@ -9,8 +9,8 @@ class ApiError extends Error {
     throw new ApiError(400, message);
   }
 
-  static unauthorized() {
-    throw new ApiError(401, "Unauthorized");
+  static unauthorized(message) {
+    throw new ApiError(401, message || "Unauthorized");
   }
 }
 

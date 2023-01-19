@@ -14,8 +14,19 @@ class AuthRepository {
 
     return newUser.dataValues;
   }
-  async createJwt(credentials) {
+  async login(credentials) {
+    const date = new Date().toString();
+
+    const user = UserModel.update(
+      { onlineStatus: true, lastLogin: date },
+      { where: { email: credentials.email } }
+    );
+
     return jwt.sign(credentials, process.env.JWT_SECRET);
+  }
+
+  quit(email) {
+    UserModel.update({ onlineStatus: false }, { where: { email } });
   }
 }
 
