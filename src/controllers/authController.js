@@ -41,6 +41,10 @@ class AuthController {
 
       return res.status(200).json({ data: jwtToken });
     } catch (error) {
+      if (error.errors) {
+        return res.status(400).json({ error: error.errors });
+      }
+
       return res.status(400).json({ error: error.message });
     }
   }
