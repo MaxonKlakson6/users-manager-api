@@ -6,6 +6,7 @@ const { AuthRepository } = require("../repositories/index");
 const { signUpSchema, signInSchema } = require("../validation/index");
 const ApiError = require("../errors/ApiError");
 const checkBLock = require("../helpers/checkBlock");
+const checkJwt = require("../helpers/checkJwt");
 
 class AuthController {
   async signIn(req, res) {
@@ -70,6 +71,18 @@ class AuthController {
         return res.status(400).json({ error: error.errors });
       }
 
+      return res.status(400).json({ error: error.message });
+    }
+  }
+
+  async quit(req, res) {
+    try {
+      const email = checkJwt();
+
+      AuthRepository.quit(email);
+
+      res.status(200).json("Account offline");
+    } catch (error) {
       return res.status(400).json({ error: error.message });
     }
   }
