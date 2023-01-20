@@ -69,6 +69,10 @@ class UserController {
       const { idList } = req.body;
       const updatedUserList = await UserRepository.deleteUsers(idList);
 
+      if (idList.includes(user.id)) {
+        ApiError.unauthorized("Unauthorized");
+      }
+
       res.json({ updatedUserList });
     } catch (error) {
       res.status(error.status).json({ error: error.message });
