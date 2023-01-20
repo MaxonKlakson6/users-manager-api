@@ -11,6 +11,10 @@ class UserController {
 
       const user = await UserModel.findOne({ where: { email } });
 
+      if (!user) {
+        ApiError.unauthorized("Unauthorized");
+      }
+
       checkBlock(user);
 
       const usersList = await UserRepository.getAllUsers();
@@ -27,6 +31,10 @@ class UserController {
       const email = checkJwt(req);
 
       const user = await UserModel.findOne({ where: { email } });
+
+      if (!user) {
+        ApiError.unauthorized("Unauthorized");
+      }
 
       checkBlock(user);
 
@@ -51,6 +59,10 @@ class UserController {
       const email = checkJwt(req);
 
       const user = await UserModel.findOne({ where: { email } });
+
+      if (!user) {
+        ApiError.unauthorized("Unauthorized");
+      }
 
       checkBlock(user);
 
