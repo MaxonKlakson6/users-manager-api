@@ -15,7 +15,7 @@ class AuthRepository {
     return newUser.dataValues;
   }
   async login(credentials) {
-    const date = new Date().toLocaleString();
+    const date = new Date();
 
     const user = UserModel.update(
       { onlineStatus: true, lastLogin: date },
